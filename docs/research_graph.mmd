@@ -1,0 +1,32 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	payment(payment)
+	classify(classify)
+	search(search)
+	technical_token_analysis(technical_token_analysis)
+	aggregate(aggregate)
+	analyze(analyze)
+	__end__([<p>__end__</p>]):::last
+	__start__ -.-> __end__;
+	__start__ -.-> classify;
+	__start__ -.-> payment;
+	aggregate -.-> __end__;
+	aggregate -.-> analyze;
+	classify -.-> __end__;
+	classify -.-> search;
+	payment -.-> __end__;
+	payment -.-> classify;
+	search -.-> __end__;
+	search -.-> analyze;
+	search -.-> technical_token_analysis;
+	technical_token_analysis -.-> __end__;
+	technical_token_analysis -.-> aggregate;
+	analyze --> __end__;
+	classDef default fill:#1a2332,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#1e3a5f

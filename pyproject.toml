@@ -1,0 +1,43 @@
+[project]
+name = "crypto-agent"
+version = "0.1.0"
+description = "AI-powered Crypto Research Agent using LangGraph and LangChain"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "langgraph>=0.2",
+    "langchain>=0.3",
+    "langchain-openai>=0.2",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.5",
+    "python-dotenv>=1.0",
+    "httpx>=0.27",
+    "tenacity>=9.0",
+    "structlog>=24.4",
+    "web3>=7.0",
+    "tavily-python>=0.7.24",
+    "x402[fastapi]>=2.10.0",
+    "cdp-sdk>=1.46.0",
+]
+
+[project.scripts]
+crypto-agent = "main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["agents", "graphs", "tools", "models", "api", "config", "services"]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
