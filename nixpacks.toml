@@ -1,0 +1,8 @@
+# Railway / Nixpacks: Python (uv) + Vite frontend build in one service.
+providers = ["...", "node"]
+
+[phases.build]
+cmds = ["...", "cd frontend && npm install && npm run build"]
+
+[start]
+cmd = "uv run python main.py serve"

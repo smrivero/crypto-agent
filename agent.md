@@ -18,6 +18,7 @@
 - **UI tema/ancho**: layout ~1320px, modo claro por defecto, switch ☀/☾ (`localStorage.theme`).
 - **Modal pago x402**: confirmación Premium centrada (backdrop, Esc, Cancel); ya no se pierde abajo en la página.
 - **Railway deploy**: `main.py serve` lee `PORT`/`HOST`; exporta `app` para `uvicorn main:app`; `reload=False`; README con Start Command.
+- **Railway full-stack**: `nixpacks.toml` + `railway.json` — build frontend en deploy; FastAPI sirve `frontend/dist` con SPA fallback.
 
 ## Mejoras / tareas posibles
 

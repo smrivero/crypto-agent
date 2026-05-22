@@ -33,6 +33,47 @@ uv run python main.py serve
 
 Open **http://localhost:8000**
 
+### Railway (single service: API + UI)
+
+One service builds the Vite app and serves it from FastAPI.
+
+**Start Command** (also in `railway.json` / `nixpacks.toml`):
+
+```bash
+uv run python main.py serve
+```
+
+**Build** (via `nixpacks.toml`):
+
+1. `uv sync` — Python dependencies
+2. `cd frontend && npm install && npm run build` — static UI into `frontend/dist`
+
+FastAPI serves:
+
+- `/api/v1/*` — API
+- `/docs`, `/openapi.json` — OpenAPI
+- `/assets/*` — Vite bundles
+- `/` and other non-API paths — `index.html` (SPA fallback)
+
+**Environment variables** (Railway dashboard):
+
+| Variable | Required | Notes |
+|----------|----------|-------|
+| `OPENAI_API_KEY` | yes | LLM |
+| `TAVILY_API_KEY` | recommended | Real web search |
+| `X402_RECEIVING_WALLET_ADDRESS` | for premium | Seller wallet |
+| `CDP_*` | optional | Coinbase facilitator |
+| `VITE_WALLETCONNECT_PROJECT_ID` | optional | Baked in at **build** time for WalletConnect |
+
+Railway injects `PORT`; bind defaults to `0.0.0.0`. Local parity:
+
+```bash
+cd frontend && npm install && npm run build && cd ..
+PORT=8000 uv run python main.py serve
+```
+
+Open the Railway URL — same origin for UI and `/api/v1/*` (no CORS issues).
+
 ### Development (hot reload UI + API proxy)
 
 Terminal 1 — API:
@@ -49,22 +90,6 @@ npm run dev
 ```
 
 Open **http://localhost:5173** (Vite proxies `/api` to port 8000).
-
-### Railway
-
-Set **Start Command** to:
-
-```bash
-uv run python main.py serve
-```
-
-Railway injects `PORT`; the server binds to `0.0.0.0` by default. Override with `HOST` if needed.
-
-For local parity:
-
-```bash
-PORT=8000 uv run python main.py serve
-```
 
 ## CLI mode
 
