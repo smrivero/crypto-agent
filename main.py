@@ -1,26 +1,32 @@
 """
 Entry point — two modes:
 
-  python main.py                       → start FastAPI server
-  python main.py "Analyze DEXTF token" → run a single query in the terminal
+  python main.py serve                  → start FastAPI server
+  python main.py "Analyze DEXTF token"  → run a single query in the terminal
+
+Also exports ``app`` for ``uvicorn main:app`` (e.g. Railway).
 """
 
 import asyncio
+import os
 import sys
 
 import uvicorn
 
+from api.app import app
 from config.logging import configure_logging
 from config.settings import settings
 
 
 def serve() -> None:
     configure_logging(debug=settings.debug)
+    port = int(os.getenv("PORT", settings.api_port))
+    host = os.getenv("HOST", "0.0.0.0")
     uvicorn.run(
         "api.app:app",
-        host=settings.api_host,
-        port=settings.api_port,
-        reload=settings.debug,
+        host=host,
+        port=port,
+        reload=False,
     )
 
 

@@ -17,6 +17,7 @@
 - **MetaMask (UI)**: migrado a **React + Vite** en `frontend/` con **wagmi + RainbowKit** (MetaMask, Coinbase, Rabby, WalletConnect); x402 EIP-3009 sin cambios de protocolo.
 - **UI tema/ancho**: layout ~1320px, modo claro por defecto, switch ☀/☾ (`localStorage.theme`).
 - **Modal pago x402**: confirmación Premium centrada (backdrop, Esc, Cancel); ya no se pierde abajo en la página.
+- **Railway deploy**: `main.py serve` lee `PORT`/`HOST`; exporta `app` para `uvicorn main:app`; `reload=False`; README con Start Command.
 
 ## Mejoras / tareas posibles
 
@@ -27,6 +28,7 @@
 
 ## Próximos pasos sugeridos
 
-1. `cd frontend && npm run build` antes de servir en producción (`uv run python main.py serve`).
-2. Dev UI: `npm run dev` en `frontend/` + API en `:8000`.
-3. Probar Premium con varias wallets (MetaMask, Rabby, WalletConnect) en Base Sepolia.
+1. Railway: Start Command `uv run python main.py serve`; variables de entorno en el dashboard.
+2. `cd frontend && npm run build` antes de servir en producción (`uv run python main.py serve`).
+3. Dev UI: `npm run dev` en `frontend/` + API en `:8000`.
+4. Probar Premium con varias wallets (MetaMask, Rabby, WalletConnect) en Base Sepolia.

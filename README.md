@@ -50,6 +50,22 @@ npm run dev
 
 Open **http://localhost:5173** (Vite proxies `/api` to port 8000).
 
+### Railway
+
+Set **Start Command** to:
+
+```bash
+uv run python main.py serve
+```
+
+Railway injects `PORT`; the server binds to `0.0.0.0` by default. Override with `HOST` if needed.
+
+For local parity:
+
+```bash
+PORT=8000 uv run python main.py serve
+```
+
 ## CLI mode
 
 ```bash
