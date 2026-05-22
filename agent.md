@@ -14,7 +14,7 @@
 - **Fix x402 local**: `load_dotenv()` + `Settings.evm_private_key` (UI `/x402/dev-sign` ya no depende solo de `os.getenv`); `premium-demo` no devuelve 500 si `settle` falla (try/except + headers coercion).
 - **Pipeline pago**: nodo LangGraph `payment` (premium); trazas `config/payment_trace.py` + SSE `payment_log`; panel UI **Payment detail**.
 - **Etherscan**: `ETHERSCAN_API_KEY` en `.env`; holders vía **Blockscout** si Etherscan tokeninfo exige API Pro (`tools/token_rpc.py`).
-- **MetaMask (UI)**: `wallet.js` + `x402-pay.js` — Base Sepolia, firma x402 en navegador, premium vía `POST /research` → firma → `POST /research/stream`.
+- **MetaMask (UI)**: migrado a **React + Vite** en `frontend/` con **wagmi + RainbowKit** (MetaMask, Coinbase, Rabby, WalletConnect); x402 EIP-3009 sin cambios de protocolo.
 - **UI tema/ancho**: layout ~1320px, modo claro por defecto, switch ☀/☾ (`localStorage.theme`).
 - **Modal pago x402**: confirmación Premium centrada (backdrop, Esc, Cancel); ya no se pierde abajo en la página.
 
@@ -27,6 +27,6 @@
 
 ## Próximos pasos sugeridos
 
-1. Reiniciar el servidor tras cambios en `config/settings.py` (`uv run python main.py serve`).
-2. Probar UI Premium (botón testnet) y `uv run python scripts/x402_buyer_test.py` (segunda petición debe ser **200**).
-3. Si `settle` falla en logs, revisar USDC/ETH del buyer y no reutilizar el mismo `PAYMENT-SIGNATURE` (nonce único).
+1. `cd frontend && npm run build` antes de servir en producción (`uv run python main.py serve`).
+2. Dev UI: `npm run dev` en `frontend/` + API en `:8000`.
+3. Probar Premium con varias wallets (MetaMask, Rabby, WalletConnect) en Base Sepolia.

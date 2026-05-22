@@ -275,20 +275,20 @@ async def require_x402_payment(
     """
     payment_trace_emit(
         "config",
-        "Comprobando configuración del vendedor (X402_RECEIVING_WALLET_ADDRESS)",
+        "Checking seller configuration (X402_RECEIVING_WALLET_ADDRESS)",
         status="info",
     )
     if not settings.x402_receiving_wallet_address.strip():
         payment_trace_emit(
             "config",
-            "x402 deshabilitado — falta dirección del vendedor",
+            "x402 disabled — seller address missing",
             status="error",
         )
         return None, x402_disabled_response()
 
     payment_trace_emit(
         "config",
-        f"Vendedor configurado · red {caip2_402_network()} · precio {settings.x402_demo_price}",
+        f"Seller configured · network {caip2_402_network()} · price {settings.x402_demo_price}",
         status="ok",
     )
 
@@ -297,16 +297,16 @@ async def require_x402_payment(
     try:
         payment_trace_emit(
             "init",
-            f"Inicializando servidor x402 ({resolution.effective_mode} · {resolution.url})",
+            f"Initializing x402 server ({resolution.effective_mode} · {resolution.url})",
             status="info",
         )
         http_server = get_x402_http_server(resolution)
         if resolution.warning:
             payment_trace_emit("init", resolution.warning, status="warn")
-        payment_trace_emit("init", "Servidor x402 listo", status="ok")
+        payment_trace_emit("init", "x402 server ready", status="ok")
     except Exception as exc:
         logger.exception("x402_init_failed")
-        payment_trace_emit("init", f"Error al iniciar x402: {exc}", status="error")
+        payment_trace_emit("init", f"Failed to start x402: {exc}", status="error")
         return None, _response_with_warning(
             JSONResponse(
                 status_code=500,
@@ -318,13 +318,13 @@ async def require_x402_payment(
     if _payment_header_present(request):
         payment_trace_emit(
             "headers",
-            "Cabecera PAYMENT-SIGNATURE recibida — verificando con facilitator",
+            "PAYMENT-SIGNATURE header received — verifying with facilitator",
             status="info",
         )
     else:
         payment_trace_emit(
             "headers",
-            "Sin PAYMENT-SIGNATURE — el cliente debe firmar y reintentar (HTTP 402)",
+            "No PAYMENT-SIGNATURE — client must sign and retry (HTTP 402)",
             status="warn",
         )
 
@@ -337,7 +337,7 @@ async def require_x402_payment(
 
     payment_trace_emit(
         "verify",
-        f"Verificando pago para {route_pattern}",
+        f"Verifying payment for {route_pattern}",
         status="info",
         detail=f"{request.method} {request.url.path}",
     )
@@ -352,7 +352,7 @@ async def require_x402_payment(
     if result.type == "payment-error" and result.response:
         payment_trace_emit(
             "verify",
-            "Pago requerido o rechazado (402 / payment-error)",
+            "Payment required or rejected (402 / payment-error)",
             status="warn",
         )
         resp = instructions_to_response(result.response)
@@ -368,7 +368,7 @@ async def require_x402_payment(
         )
         payment_trace_emit(
             "verify",
-            f"Ruta sin coincidencia x402 (esperado {route_pattern})",
+            f"No matching x402 route (expected {route_pattern})",
             status="error",
         )
         return None, _response_with_warning(
@@ -387,7 +387,7 @@ async def require_x402_payment(
     if result.type != "payment-verified":
         payment_trace_emit(
             "verify",
-            f"Respuesta inesperada del facilitator: {result.type}",
+            f"Unexpected facilitator response: {result.type}",
             status="error",
         )
         return None, _response_with_warning(
@@ -401,7 +401,7 @@ async def require_x402_payment(
     if result.payment_payload is None or result.payment_requirements is None:
         payment_trace_emit(
             "verify",
-            "Verificación incompleta — faltan payload o requirements",
+            "Incomplete verification — missing payload or requirements",
             status="error",
         )
         return None, _response_with_warning(
@@ -429,7 +429,7 @@ async def require_x402_payment(
     )
     payment_trace_emit(
         "verify",
-        "Pago verificado por facilitator",
+        "Payment verified by facilitator",
         status="ok",
         detail=(
             f"facilitator={resolution.effective_mode} · "
@@ -446,7 +446,7 @@ async def settle_x402_payment(verified: X402VerifiedPayment) -> dict[str, str]:
     resolution = verified.facilitator
     payment_trace_emit(
         "settle",
-        "Liquidando pago en facilitator (settlement on-chain)",
+        "Settling payment with facilitator (on-chain settlement)",
         status="info",
         detail=(
             f"facilitator={resolution.effective_mode} · "
@@ -468,7 +468,7 @@ async def settle_x402_payment(verified: X402VerifiedPayment) -> dict[str, str]:
             verify_valid=None,
             extra=f"exception={exc}",
         )
-        payment_trace_emit("settle", f"Excepción en settlement: {exc}", status="error")
+        payment_trace_emit("settle", f"Settlement exception: {exc}", status="error")
         raise
 
     tx_hash = settle.transaction
@@ -490,7 +490,7 @@ async def settle_x402_payment(verified: X402VerifiedPayment) -> dict[str, str]:
         logger.warning("x402_settle_failed", reason=reason)
         payment_trace_emit(
             "settle",
-            f"Settlement fallido: {reason}",
+            f"Settlement failed: {reason}",
             status="warn",
         )
         return dict(settle.headers)
@@ -506,7 +506,7 @@ async def settle_x402_payment(verified: X402VerifiedPayment) -> dict[str, str]:
     )
     payment_trace_emit(
         "settle",
-        "Settlement completado — USDC transferido al vendedor",
+        "Settlement complete — USDC transferred to seller",
         status="ok",
         detail=(
             f"facilitator={resolution.effective_mode} · "

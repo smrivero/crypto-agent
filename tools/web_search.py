@@ -38,13 +38,13 @@ async def search_crypto(token_name: str, context: str = "") -> list[dict]:
         trace_emit(
             "web",
             "search",
-            "→ Búsqueda mock (sin TAVILY_API_KEY) — no hay llamadas HTTP a Tavily",
+            "→ Mock search (no TAVILY_API_KEY) — no HTTP calls to Tavily",
         )
         results = await mock_search(token_name, context)
         trace_emit(
             "web",
             "search",
-            f"← Mock · {len(results)} resultados locales",
+            f"← Mock · {len(results)} local results",
         )
         return results
 
@@ -91,7 +91,7 @@ async def search_crypto(token_name: str, context: str = "") -> list[dict]:
         query=query,
         n=len(results),
     )
-    trace_emit("web", "search", f"← Tavily OK · {len(results)} fuentes recibidas por HTTPS")
+    trace_emit("web", "search", f"← Tavily OK · {len(results)} sources received over HTTPS")
     return results if results else [{"url": "", "content": f"No Tavily results for: {query}"}]
 
 

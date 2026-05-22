@@ -352,7 +352,7 @@ async def fetch_token_metadata(contract_address: str, network: str = "ethereum")
         trace_emit(
             "rpc",
             "technical_token_analysis",
-            f"← JSON-RPC falló tras 3 intentos · {last_err!s}"[:180],
+            f"← JSON-RPC failed after 3 attempts · {last_err!s}"[:180],
         )
         return {"error": f"RPC failed after 3 attempts: {last_err}"}
 
@@ -384,7 +384,7 @@ async def fetch_token_metadata(contract_address: str, network: str = "ethereum")
         trace_emit(
             "web",
             "technical_token_analysis",
-            "— Sin explorer configurado · holders no disponibles",
+            "— No explorer configured · holders unavailable",
         )
 
     holder_count, explorer_extra, holder_notes = await _fetch_holder_count_and_extra(
@@ -401,7 +401,7 @@ async def fetch_token_metadata(contract_address: str, network: str = "ethereum")
         trace_emit(
             "web",
             "technical_token_analysis",
-            "← Holders no disponibles en explorer",
+            "← Holders unavailable on explorer",
         )
 
     metadata["holder_count"] = holder_count

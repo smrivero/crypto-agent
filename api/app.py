@@ -14,7 +14,8 @@ from api.routes import router
 logger = structlog.get_logger()
 
 _ROOT = pathlib.Path(__file__).parent.parent
-_STATIC = _ROOT / "static"
+_FRONTEND_DIST = _ROOT / "frontend" / "dist"
+_LEGACY_STATIC = _ROOT / "static"
 
 
 @asynccontextmanager
@@ -62,10 +63,22 @@ app.add_middleware(
     ],
 )
 
-app.mount("/static", StaticFiles(directory=_STATIC), name="static")
 app.include_router(router, prefix="/api/v1")
+
+if (_FRONTEND_DIST / "assets").is_dir():
+    app.mount("/assets", StaticFiles(directory=_FRONTEND_DIST / "assets"), name="assets")
+
+
+def _spa_index() -> pathlib.Path:
+    built = _FRONTEND_DIST / "index.html"
+    if built.is_file():
+        return built
+    legacy = _LEGACY_STATIC / "index.html"
+    if legacy.is_file():
+        return legacy
+    return built
 
 
 @app.get("/", include_in_schema=False)
 async def index() -> FileResponse:
-    return FileResponse(_STATIC / "index.html")
+    return FileResponse(_spa_index())
