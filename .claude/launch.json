@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "crypto-agent",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": ["run", "python", "main.py", "serve"],
+      "port": 8000
+    }
+  ]
+}

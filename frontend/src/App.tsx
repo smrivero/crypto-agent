@@ -39,6 +39,7 @@ import {
   type PaymentRequired,
 } from './lib/x402';
 import { Web3Provider } from './providers/Web3Provider';
+import { LoginScreen } from './components/LoginScreen';
 
 type ResearchMode = 'free' | 'premium';
 
@@ -590,6 +591,8 @@ function AppContent({ theme, onToggleTheme }: { theme: 'light' | 'dark'; onToggl
 }
 
 export default function App() {
+  const [loggedIn, setLoggedIn] = useState(() => sessionStorage.getItem('auth') === '1');
+
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('theme');
     return saved === 'dark' ? 'dark' : 'light';
@@ -607,6 +610,12 @@ export default function App() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
+
+  if (!loggedIn) {
+    return (
+      <LoginScreen onLogin={() => { sessionStorage.setItem('auth', '1'); setLoggedIn(true); }} />
+    );
+  }
 
   return (
     <Web3Provider theme={theme}>
